@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zeus Speech - Text to Speech Converter</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+
+      rel="icon"
+
+      href="{{ url_for('static', filename='logo.png') }}"
+
+    /> 
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <div class="nav-logo">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+              ></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="23"></line>
+              <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+          </div>
+          <span class="brand-name">Zeus Speech</span>
+        </div>
+        <div class="nav-actions">
+          <button
+            class="nav-btn size-toggle"
+            id="sizeToggle"
+            title="Toggle container size"
+          >
+            <i class="fas fa-compress-arrows-alt"></i>
+          </button>
+          <button
+            class="nav-btn dark-mode-toggle"
+            id="darkModeToggle"
+            title="Toggle dark mode"
+          >
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+      <div class="main-container" id="mainContainer">
+        <div class="glass-container" id="glassContainer">
+          <div class="header">
+            <div class="logo">
+              <svg
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                ></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            </div>
+            <h1>Text to Speech</h1>
+            <p class="subtitle">
+              Convert any text into natural-sounding speech
+            </p>
+          </div>
+
+          <div class="content">
+            <div class="input-section">
+              <label for="textInput" class="input-label">
+                <span>Enter Your Text</span>
+                <span class="char-count" id="charCount">0 characters</span>
+              </label>
+              <textarea
+                id="textInput"
+                placeholder="Type or paste your text here... Supported languages: English, Malayalam, Hindi, Tamil, and many more!"
+                rows="5"
+              ></textarea>
+            </div>
+
+            <div class="controls-section">
+              <div class="control-row">
+                <div class="control-group">
+                  <label for="language">Language</label>
+                  <select id="language">
+                    <option value="auto">Auto Detect</option>
+                    {% for code, name in languages.items() %}
+                    <option value="{{ code }}">{{ name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="control-group speed-control-group">
+                  <label for="speed" class="speed-label-inline">
+                    <span>Speed</span>
+                    <span class="speed-badge" id="speedValue">1.0x</span>
+                  </label>
+                  <div class="speed-control-wrapper">
+                    <button
+                      class="speed-btn speed-decrease"
+                      id="speedDecrease"
+                      title="Decrease Speed"
+                    >
+                      <i class="fas fa-minus"></i>
+                    </button>
+                    <div class="speed-value-box" id="speedDisplay">1.0x</div>
+                    <button
+                      class="speed-btn speed-increase"
+                      id="speedIncrease"
+                      title="Increase Speed"
+                    >
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button id="speakBtn" class="btn btn-primary">
+                <span class="btn-icon">▶</span>
+                <span>Read Text</span>
+              </button>
+              <button id="stopBtn" class="btn btn-secondary" disabled>
+                <span class="btn-icon">⏹</span>
+                <span>Stop</span>
+              </button>
+              <button id="pauseBtn" class="btn btn-secondary" disabled>
+                <span class="btn-icon">⏸</span>
+                <span>Pause</span>
+              </button>
+            </div>
+
+            <div class="status-section">
+              <div id="status" class="status"></div>
+              <div id="detectedLang" class="detected-lang"></div>
+            </div>
+
+            <audio id="audioPlayer" controls style="display: none"></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <p class="copyright">&copy; 2025 Zeus Speech. All rights reserved.</p>
+        <p class="author">Arun Suresh</p>
+        <div class="social-links">
+          <a
+            href="https://www.linkedin.com/in/arun-suresh-/"
+            target="_blank"
+            class="social-link"
+            title="LinkedIn"
+          >
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a
+            href="https://github.com/Arunsuresh100"
+            target="_blank"
+            class="social-link"
+            title="GitHub"
+          >
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
